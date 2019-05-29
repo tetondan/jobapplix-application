@@ -5,23 +5,23 @@ import { useContext, useEffect } from "react";
 import fetch from "isomorphic-unfetch";
 import styled from "styled-components";
 
-import App from "../../components/App";
-import Menu from "../../components/SidebarMenu/Menu";
-import Footer from "../../components/Footer";
-import Header from "../../components/PositionsPage/Header";
-import Description from "../../components/PositionsPage/Description";
-import QuestionsGroup from "../../components/PositionsPage/QuestionsGroup";
-import Questions from "../../components/PositionsPage/Questions";
-import WorkHistoryGroup from "../../components/PositionsPage/WorkHistoryGroup";
-import EduHistoryGroup from "../../components/PositionsPage/EduHistoryGroup";
-import PersonalRefsGroup from "../../components/PositionsPage/PersonalRefsGroup";
-import ShiftTimes from "../../components/PositionsPage/Availability/ShiftTimes";
-import Finish from "../../components/PositionsPage/Finish";
-import Complete from "../../components/PositionsPage/Complete";
+import App from "../components/App";
+import Menu from "../components/SidebarMenu/Menu";
+import Footer from "../components/Footer";
+import Header from "../components/PositionsPage/Header";
+import Description from "../components/PositionsPage/Description";
+import QuestionsGroup from "../components/PositionsPage/QuestionsGroup";
+import Questions from "../components/PositionsPage/Questions";
+import WorkHistoryGroup from "../components/PositionsPage/WorkHistoryGroup";
+import EduHistoryGroup from "../components/PositionsPage/EduHistoryGroup";
+import PersonalRefsGroup from "../components/PositionsPage/PersonalRefsGroup";
+import ShiftTimes from "../components/PositionsPage/Availability/ShiftTimes";
+import Finish from "../components/PositionsPage/Finish";
+import Complete from "../components/PositionsPage/Complete";
 
-import { API_URL } from "../../constants/urls";
-import { checkStatus } from "../../helpers";
-import { PositionContext } from "../../context/PositionContext";
+import { API_URL } from "../constants/urls";
+import { checkStatus } from "../helpers";
+import { PositionContext } from "../context/PositionContext";
 
 const ApplicationContainer = styled.div`
   flex-grow: 1;
@@ -32,6 +32,7 @@ const ApplicationContainer = styled.div`
 const PositionPage = props => {
   const { router, position, business, error } = props;
   if (error) {
+    console.log(error);
     return <ErrorPage statusCode={error} />;
   }
 
@@ -194,6 +195,8 @@ const PositionPage = props => {
 
 PositionPage.getInitialProps = async context => {
   try {
+    console.log(context.business);
+    console.log(context.position);
     const businessRes = await fetch(
       `${API_URL}/businesses?url=${context.query.business}`
     );

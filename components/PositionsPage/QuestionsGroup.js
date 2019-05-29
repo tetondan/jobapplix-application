@@ -1,5 +1,5 @@
 import { withRouter } from "next/router";
-import Link from "next/Link";
+import Link from "next/link";
 import ProgressBar from "./ProgressBar";
 import styled from "styled-components";
 
@@ -13,7 +13,7 @@ export const GroupContainer = styled.div`
   max-width: 700px;
   margin: 0 auto;
   ${media.desktop`
-    margin: 50px auto 0;
+    margin-top: 50px;
   `};
 `;
 
