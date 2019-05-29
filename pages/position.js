@@ -195,6 +195,8 @@ const PositionPage = props => {
 
 PositionPage.getInitialProps = async context => {
   try {
+    console.log(context.business);
+    console.log(context.position);
     const businessRes = await fetch(
       `${API_URL}/businesses?url=${context.query.business}`
     );

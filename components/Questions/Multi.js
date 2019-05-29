@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled, { css } from "styled-components";
 
 import { dark, white, jaBlue } from "../../constants/colors";
-import position from "../../pages/position";
+// import position from "../../pages/position";
 
 const MultiContainer = styled.div`
   width: 100%;
