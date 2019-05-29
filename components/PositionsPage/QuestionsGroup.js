@@ -1,5 +1,5 @@
 import { withRouter } from "next/router";
-import Link from "next/Link";
+import Link from "next/link";
 import ProgressBar from "./ProgressBar";
 import styled from "styled-components";
 

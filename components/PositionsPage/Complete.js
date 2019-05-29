@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { withRouter } from "next/router";
-import Link from "next/Link";
+import Link from "next/link";
 import { jaBlue, white, dark } from "../../constants/colors";
 import { GroupContainer, QuestionsContainer } from "./QuestionsGroup";
 

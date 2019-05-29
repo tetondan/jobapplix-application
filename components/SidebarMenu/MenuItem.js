@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { withRouter } from "next/router";
-import Link from "next/Link";
+import Link from "next/link";
 import styled, { css } from "styled-components";
 
 import { positionsBorder, jaBlue, white } from "../../constants/colors";
