@@ -32,6 +32,7 @@ const ApplicationContainer = styled.div`
 const PositionPage = props => {
   const { router, position, business, error } = props;
   if (error) {
+    console.log(error);
     return <ErrorPage statusCode={error} />;
   }
 
