@@ -13,7 +13,7 @@ export const GroupContainer = styled.div`
   max-width: 700px;
   margin: 0 auto;
   ${media.desktop`
-    margin: 50px auto 0;
+    margin-top: 50px;
   `};
 `;
 
