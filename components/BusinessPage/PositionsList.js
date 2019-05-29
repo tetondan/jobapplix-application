@@ -1,6 +1,8 @@
 import Link from "next/Link";
 import { withRouter } from "next/router";
 import styled from "styled-components";
+
+import { media } from "../../constants/mediaQueries";
 import {
   dark,
   jaBlue,
@@ -14,6 +16,8 @@ const PositionsListContainer = styled.div`
   flex-direction: column;
   flex-grow: 1;
   margin-bottom: 30px;
+  width: 100%;
+  max-width: 700px;
 `;
 
 const PositionHeader = styled.div`

@@ -3,11 +3,21 @@ import Link from "next/Link";
 import ProgressBar from "./ProgressBar";
 import styled from "styled-components";
 
-import Question from "./Question";
-
+import { media } from "../../constants/mediaQueries";
 import { dark, jaBlue, white } from "../../constants/colors";
 
-export const Container = styled.div`
+export const GroupContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  ${media.desktop`
+    margin: 50px auto 0;
+  `};
+`;
+
+export const QuestionsContainer = styled.div`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -18,6 +28,9 @@ export const Container = styled.div`
 
 export const Title = styled.h1`
   font-size: 1.6rem;
+  ${media.desktop`
+    font-size: 2.1rem;
+  `};
 `;
 
 export const Notice = styled.p`
@@ -49,26 +62,16 @@ export const Buttons = styled.button`
 
 const QuestionsGroup = props => {
   return (
-    <>
+    <GroupContainer>
       <ProgressBar
         width={`${props.percentage}%`}
         step={`${1 + Number(props.router.query.pageId)}/${props.total}`}
       />
-      <Container>
+      <QuestionsContainer>
         <Title>{props.title}</Title>
-        <Notice>* indicates required field</Notice>
-        {props.questions.map(question => {
-          return (
-            <Question
-              key={question.id}
-              question={question}
-              value={props.answersGroup.group[question.id]}
-              changeHandler={props.answersGroup.changeHandler}
-              showLabel={!(props.group === "basic")}
-            />
-          );
-        })}
-      </Container>
+        <Notice>{props.notice}</Notice>
+        {props.children}
+      </QuestionsContainer>
       <ButtonsGroup>
         <Buttons
           color={dark}
@@ -83,7 +86,7 @@ const QuestionsGroup = props => {
           </Buttons>
         </Link>
       </ButtonsGroup>
-    </>
+    </GroupContainer>
   );
 };
 

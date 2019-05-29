@@ -38,7 +38,7 @@ const Text = props => {
   const [textValue, setTextValue] = useState(props.value);
   const [labelVisible, setLabelVisible] = useState(false);
   useEffect(() => {
-    if (textValue.length > 0) {
+    if (textValue && textValue.length > 0) {
       setLabelVisible(true);
     } else {
       setLabelVisible(false);
@@ -56,7 +56,13 @@ const Text = props => {
         type="text"
         placeholder={props.labelVisible ? "" : props.question}
         value={textValue}
-        onChange={e => setTextValue(e.target.value)}
+        onChange={e => {
+          if (props.validator) {
+            setTextValue(props.validator(e.target.value));
+          } else {
+            setTextValue(e.target.value);
+          }
+        }}
         onBlur={props.changeHandler(props.id, textValue)}
       />
     </TextContainer>

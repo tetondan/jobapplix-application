@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { dark, white, jaBlue, lightBorder } from "../../constants/colors";
-
+import { media } from "../../constants/mediaQueries";
 const HeaderContainer = styled.div`
   width: 100%;
   padding: 20px 50px;
@@ -9,6 +9,7 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 4px solid ${jaBlue};
+  ${media.desktop`justify-content: center;`};
 `;
 
 const BusinessImage = styled.div`

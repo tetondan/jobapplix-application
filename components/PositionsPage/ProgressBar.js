@@ -1,11 +1,14 @@
 import styled from "styled-components";
 
 import { dark, jaBlue } from "../../constants/colors";
-
+import { media } from "../../constants/mediaQueries";
 const BarContainer = styled.div`
   padding: 15px 30px;
   display: flex;
   align-items: center;
+  ${media.desktop`
+    display: none;
+  `};
 `;
 
 const Bar = styled.div`

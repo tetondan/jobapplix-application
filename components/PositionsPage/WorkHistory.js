@@ -1,49 +1,108 @@
-import { withRouter } from "next/router";
-import Link from "next/Link";
-import ProgressBar from "./ProgressBar";
+import styled from "styled-components";
 
-// import Text from "../Questions/Text";
+import Text from "../Questions/Text";
+import Bool from "../Questions/Bool";
 
-import { dark, jaBlue, white } from "../../constants/colors";
+import { positionsBackground } from "../../constants/colors";
 
-import {
-  Container,
-  Title,
-  Notice,
-  ButtonsGroup,
-  Buttons
-} from "./QuestionsGroup";
+const WorkHistoryGroup = styled.div`
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid ${positionsBackground};
+  border-radius: 5px;
+  margin-bottom: 10px;
+
+  &:nth-child(even) {
+    background-color: ${positionsBackground};
+  }
+`;
+
+const WorkHistTitle = styled.h2`
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+`;
 
 const WorkHistory = props => {
-  console.log(props);
+  const { workRef, index } = props;
+  const title = ind =>
+    ind === 0 ? "Most Recent Position" : `Position #${ind + 1}`;
+  const changeHandler = (key, value) => e => {
+    props.updateWorkHist(index, key, value);
+  };
   return (
-    <>
-      <ProgressBar
-        width={`${props.percentage}%`}
-        step={`${1 + Number(props.router.query.pageId)}/${props.total}`}
+    <WorkHistoryGroup>
+      <WorkHistTitle>{title(index)}</WorkHistTitle>
+      <Text
+        labelVisible={false}
+        value={workRef.employer_name}
+        question="Name of Employer"
+        id="employer_name"
+        changeHandler={changeHandler}
       />
-      <Container>
-        <Title>{props.title}</Title>
-        <Notice>
-          Please Provide Information for Your Last Two Years of Employment
-        </Notice>
-      </Container>
-      <ButtonsGroup>
-        <Buttons
-          color={dark}
-          bgColor={white}
-          onClick={e => props.router.back()}
-        >
-          PREVIOUS
-        </Buttons>
-        <Link as={props.nextAs} href={props.nextPage}>
-          <Buttons color={white} bgColor={jaBlue}>
-            SAVE & NEXT
-          </Buttons>
-        </Link>
-      </ButtonsGroup>
-    </>
+      <Text
+        labelVisible={false}
+        value={workRef.phone}
+        question="Employers Phone Number"
+        changeHandler={changeHandler}
+        id="phone"
+      />
+      <Text
+        labelVisible={false}
+        value={workRef.address}
+        question="Address"
+        changeHandler={changeHandler}
+        id="address"
+      />
+      <Text
+        labelVisible={false}
+        value={workRef.supervisors_name}
+        question="Your Supervisor's Name"
+        changeHandler={changeHandler}
+        id="supervisors_name"
+      />
+      <Text
+        labelVisible={false}
+        value={workRef.title}
+        question="Your Title"
+        changeHandler={changeHandler}
+        id="title"
+      />
+      <Text
+        labelVisible={false}
+        value={workRef.duties}
+        question="Your Duties"
+        changeHandler={changeHandler}
+        id="duties"
+      />
+      <Text
+        labelVisible={false}
+        value={workRef.start_date}
+        question="Date You Started"
+        changeHandler={changeHandler}
+        id="start_date"
+      />
+      <Text
+        labelVisible={false}
+        value={workRef.end_date}
+        question="Date You Left"
+        changeHandler={changeHandler}
+        id="end_date"
+      />
+      <Text
+        labelVisible={false}
+        value={workRef.reason_for_leaving}
+        question="Your Reason for Leaving"
+        changeHandler={changeHandler}
+        id="reason_for_leaving"
+      />
+      <Bool
+        question={"May we contact this employer?"}
+        value={workRef.can_contact}
+        changeHandler={changeHandler}
+        id="can_contact"
+      />
+    </WorkHistoryGroup>
   );
 };
 
-export default withRouter(WorkHistory);
+export default WorkHistory;

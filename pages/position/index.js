@@ -1,23 +1,39 @@
 import Head from "next/head";
+import ErrorPage from "next/error";
 import { withRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import fetch from "isomorphic-unfetch";
+import styled from "styled-components";
 
 import App from "../../components/App";
+import Menu from "../../components/SidebarMenu/Menu";
 import Footer from "../../components/Footer";
 import Header from "../../components/PositionsPage/Header";
 import Description from "../../components/PositionsPage/Description";
-// import Basics from "../../components/PositionsPage/Basics";
 import QuestionsGroup from "../../components/PositionsPage/QuestionsGroup";
-import WorkHistory from "../../components/PositionsPage/WorkHistory";
+import Questions from "../../components/PositionsPage/Questions";
+import WorkHistoryGroup from "../../components/PositionsPage/WorkHistoryGroup";
+import EduHistoryGroup from "../../components/PositionsPage/EduHistoryGroup";
+import PersonalRefsGroup from "../../components/PositionsPage/PersonalRefsGroup";
+import ShiftTimes from "../../components/PositionsPage/Availability/ShiftTimes";
+import Finish from "../../components/PositionsPage/Finish";
+import Complete from "../../components/PositionsPage/Complete";
 
 import { API_URL } from "../../constants/urls";
-
-import { BusinessContext } from "../../context/BusinessContext";
+import { checkStatus } from "../../helpers";
 import { PositionContext } from "../../context/PositionContext";
 
+const ApplicationContainer = styled.div`
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+`;
+
 const PositionPage = props => {
-  const { router, position, business } = props;
+  const { router, position, business, error } = props;
+  if (error) {
+    return <ErrorPage statusCode={error} />;
+  }
 
   const positionContext = useContext(PositionContext);
 
@@ -26,7 +42,9 @@ const PositionPage = props => {
       currentGroup !== "workHistory" &&
       currentGroup !== "personalRefs" &&
       currentGroup !== "eduHistory" &&
-      currentGroup !== "shiftTimes"
+      currentGroup !== "availability" &&
+      currentGroup !== "finish" &&
+      currentGroup !== "complete"
     );
   };
 
@@ -74,7 +92,12 @@ const PositionPage = props => {
     other: "OTHER INFORMATION",
     workHistory: "WORK HISTORY",
     personalRefs: "PERSONAL REFERENCES",
-    eduHistory: "EDUCATIONAL HISTORY"
+    eduHistory: "EDUCATIONAL HISTORY",
+    availability: "AVAILABILITY"
+  };
+
+  const menuVisible = () => {
+    return props.router.query.pageId !== undefined && group !== "complete";
   };
 
   return (
@@ -83,57 +106,117 @@ const PositionPage = props => {
         <title>{business.name}</title>
       </Head>
       <Header business={business} positionName={position.name} />
-      {/* If there is no page id, load the description screen. If the Id is 0 load the basics screen. Otherwise, load the questions screen*/}
-      {pageId !== undefined && isQuestionsGroup(group) && (
-        <QuestionsGroup
-          title={titles[group]}
-          group={group}
-          questions={questions.questions}
-          answersGroup={positionContext[group]}
-          percentage={percentageComplete}
-          total={positionContext.availableGroups.length}
-          nextPage={nextPage}
-          nextAs={nextAs}
-        />
-      )}
-      {group === "workHistory" && (
-        <WorkHistory
-          title={titles[group]}
-          group={group}
-          percentage={percentageComplete}
-          total={positionContext.availableGroups.length}
-          nextPage={nextPage}
-          nextAs={nextAs}
-        />
-      )}
-      {group === "personalRefs" && <div>PERSONAL REFS</div>}
-      {group === "eduHistory" && <div>EDUCATIONAL HISTORY</div>}
-      {pageId === undefined && (
-        <Description
-          description={position.description}
-          nextPage={nextPage}
-          nextAs={nextAs}
-        />
-      )}
+      <ApplicationContainer>
+        <Menu visible={menuVisible()} />
+        {pageId !== undefined && isQuestionsGroup(group) && (
+          <QuestionsGroup
+            title={titles[group]}
+            percentage={percentageComplete}
+            total={positionContext.availableGroups.length}
+            nextPage={nextPage}
+            nextAs={nextAs}
+            notice="* indicates required field"
+          >
+            <Questions
+              group={group}
+              questions={questions.questions}
+              answersGroup={positionContext[group]}
+            />
+          </QuestionsGroup>
+        )}
+        {group === "workHistory" && (
+          <QuestionsGroup
+            title={titles[group]}
+            percentage={percentageComplete}
+            total={positionContext.availableGroups.length}
+            nextPage={nextPage}
+            nextAs={nextAs}
+            notice="Please provide information for the last two years of your employment"
+          >
+            <WorkHistoryGroup />
+          </QuestionsGroup>
+        )}
+        {group === "personalRefs" && (
+          <QuestionsGroup
+            title={titles[group]}
+            percentage={percentageComplete}
+            total={positionContext.availableGroups.length}
+            nextPage={nextPage}
+            nextAs={nextAs}
+            notice="Please provide three personal references"
+          >
+            <PersonalRefsGroup />
+          </QuestionsGroup>
+        )}
+        {group === "eduHistory" && (
+          <QuestionsGroup
+            title={titles[group]}
+            percentage={percentageComplete}
+            total={positionContext.availableGroups.length}
+            nextPage={nextPage}
+            nextAs={nextAs}
+            notice="Please provide your educational history, starting with high school"
+          >
+            <EduHistoryGroup />
+          </QuestionsGroup>
+        )}
+        {group === "availability" && (
+          <QuestionsGroup
+            title={titles[group]}
+            percentage={percentageComplete}
+            total={positionContext.availableGroups.length}
+            nextPage={nextPage}
+            nextAs={nextAs}
+            notice="What days and times are you available? Please select all that apply:"
+          >
+            <ShiftTimes />
+          </QuestionsGroup>
+        )}
+        {group === "finish" && (
+          <Finish
+            percentage={percentageComplete}
+            total={positionContext.availableGroups.length}
+          />
+        )}
+        {group === "complete" && <Complete />}
+        {pageId === undefined && (
+          <Description
+            description={position.description}
+            nextPage={nextPage}
+            nextAs={nextAs}
+          />
+        )}
+      </ApplicationContainer>
       <Footer />
     </App>
   );
 };
 
 PositionPage.getInitialProps = async context => {
-  const businessRes = await fetch(
-    `${API_URL}/businesses?url=${context.query.business}`
-  );
-  const businessData = await businessRes.json();
+  try {
+    const businessRes = await fetch(
+      `${API_URL}/businesses?url=${context.query.business}`
+    );
+    await checkStatus(businessRes);
+    const businessData = await businessRes.json();
 
-  const positionRes = await fetch(
-    `${API_URL}/businesses/position/${context.query.position}`
-  );
-  const positionData = await positionRes.json();
+    const positionRes = await fetch(
+      `${API_URL}/businesses/position?id=${
+        context.query.position
+      }&businessUrl=${context.query.business}`
+    );
 
-  return {
-    business: businessData.business,
-    position: positionData
-  };
+    await checkStatus(positionRes);
+    const positionData = await positionRes.json();
+
+    return {
+      business: businessData.business,
+      position: positionData
+    };
+  } catch (err) {
+    return {
+      error: err.response.status
+    };
+  }
 };
 export default withRouter(PositionPage);
