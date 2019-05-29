@@ -2,15 +2,15 @@
   "version": 2,
   "builds": [{ "src": "package.json", "use": "@now/next" }],
   "routes": [
-    { "src": "/", "dest": "/" },
-    { "src": "/(?<business>[^/]*)", "dest": "/business?business=$business" },
+    {
+      "src": "/(?<business>[^/]*/(?<position>[^/]*)/(?<pageId>[^/]*))",
+      "dest": "/position?business=$business&position=$position&pageId=$pageId"
+    },
     {
       "src": "/(?<business>[^/]*/(?<position>[^/]*))",
       "dest": "/position?business=$business&position=$position"
     },
-    {
-      "src": "/(?<business>[^/]*/(?<position>[^/]*)/(?<pageId>[^/]*))",
-      "dest": "/position?business=$business&position=$position&pageId=$pageId"
-    }
+    { "src": "/(?<business>[^/]*)", "dest": "/business?business=$business" },
+    { "src": "/", "dest": "/" }
   ]
 }
